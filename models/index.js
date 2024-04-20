@@ -1,43 +1,33 @@
-'use strict';
-
+// MODEL 자동화 후 파일
+const Sequelize = require('sequelize');
 const fs = require('fs');
 const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
-const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.json')[env];// db연결에 대한 설정을 불러옴
 const db = {};
+const sequelize = new Sequelize(
+  config.database, config.username, config.password, config,
+);
+db.sequelize = sequelize;
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
-
-fs
-  .readdirSync(__dirname)
+const basename = path.basename(__filename);
+fs.readdirSync(__dirname) // 폴더위치 찾는 코드
   .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
+    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'; // index.js .파일 .js 제외
   })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+  .forEach((file) => {
+    const model = require(path.join(__dirname, file))
+    console.log(file, model.name);
     db[model.name] = model;
+    model.initiate(sequelize);
   });
 
 Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
+  console.log(db, modelName, "=====================Object.key(db)");
+  if(db[modelName].associate){
     db[modelName].associate(db);
   }
-});
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
+})
 module.exports = db;
+
+// config/config.json 작성 완료 후 npx sequelize db:create 로 db생성가능

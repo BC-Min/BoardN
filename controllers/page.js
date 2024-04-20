@@ -5,6 +5,9 @@ exports.renderProfile = (req,res,next) =>{
 exports.renderJoin = (req,res,next) =>{
     res.render('join', {title: '회원가입 - BoardN_Join'});
 };
+exports.renderBoard = (req,res,next) =>{
+    res.render('board', {title: '게시판 - BoardN_Board'});
+};
 exports.renderMain = (req,res,next) =>{
     res.render('main', {
         title: 'BoardN_Main',

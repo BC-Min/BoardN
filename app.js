@@ -6,22 +6,28 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const passport = require('passport');
+const { sequelize } = require('./models');
 
 //env파일 적용
 dotenv.config();
 //dotenv.config 가 실행 되야 process.env.COOKIE_SECRET이 가능
 //routes 연결
 const pageRouter = require('./routes/page');
-const exp = require('constants');
+const authRouter = require('./routes/auth');
+const passportConfig = require('./passport');
 
 //express실행
 const app = express();
 
+//passport설정
+passportConfig();
+
 //port연결
-app.set('port', process.env.PORT || 8001);
+app.set('port', process.env.PORT || 8085);
 
 //view 설정
-app.set('view engine    ', 'html');
+app.set('view engine', 'html');
 
 // nunjucks를 통해서 랜더링을 함.
 nunjucks.configure('views', {
@@ -29,11 +35,21 @@ nunjucks.configure('views', {
     watch: true,
 });
 
+sequelize.sync({ force: false }) //sync를 해야 연결이 됨. force:true시 테이블이 지워졌다가 다시 생성되므로 개발시에는 유용하나 배포시에는 false로 해야됨
+    .then(() => {
+        console.log('데이터베이스 연결 성공')
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+
 app.use(morgan('dev')) // 배포시 combined로 변경
 app.use(express.static(path.join(__dirname, 'public')));//public을 static으로 변경
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+// passport/index.js => serializeUser 에서 저장된 정보를 여기로 가져옴.
 app.use(session({
     resave: false,
     saveUninitialized: false,
@@ -44,7 +60,13 @@ app.use(session({
     }
 }));
 
+//passport는 반드시 express.session 밑에 작성해야함
+app.use(passport.initialize()); // 여기서 req.user, req.login, req.isAuthenticate, req.logout 이 생김.
+app.use(passport.session());
+// 세션으로 저장하는데 connect.sid라는 이름으로 세션 쿠키가 브라우저로 전송되면서 로그인이 완료됨.
+
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
 
 //404에러처리
 app.use((req, res, next) => {

@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>게시판</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>게시판번호</th>
+                <th>제목</th>
+                <th>아이디</th>
+                <th>작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.number }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.author }}</td>
+                <td>{{ post.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <input type="text" placeholder="검색어 입력">
+        <button>조회</button>
+        <button>글쓰기</button>
+    </div>
+    {% endblock %}

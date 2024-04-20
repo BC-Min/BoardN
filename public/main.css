@@ -209,3 +209,45 @@ textarea {
 footer {
     text-align: center;
 }
+
+
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.board-table th, .board-table td {
+    border: 1px solid #ddd; /* 테이블 테두리 스타일 */
+    padding: 10px;
+    text-align: center;
+}
+
+.board-table th {
+    background-color: #333; /* 테이블 헤더 배경색 */
+    color: #fff; /* 테이블 헤더 글자색 */
+}
+
+.button-group {
+    margin-top: 20px;
+}
+
+.button-group input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.button-group .btn {
+    padding: 8px 16px;
+    background-color: #007bff; /* 버튼 배경색 */
+    color: #fff; /* 버튼 글자색 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.button-group .btn:hover {
+    background-color: #0056b3; /* 마우스 호버 시 배경색 변경 */
+}

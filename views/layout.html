@@ -37,15 +37,13 @@
                         <input id="password" type="password" name="password" required>
                     </div>
                     <a id="join" href="/join" class="btn">회원가입</a>
+                    <a id="board" href="/board" class="btn">게시판</a>
                     <button id="login" type="submit" class="btn">로그인</button>
                     <a id="kakao" href="/auth/kakao" class="btn">카카오톡</a>
+                    <a id="kakao" href="/" class="btn">홈</a>
                 </form>
                 {% endif %}
             </div>
-            <footer>
-                Made by&nbsp;
-                <a href="https://www.zerocho.com" target="_blank">ZeroCho</a>
-            </footer>
         </div>
         {% block content %}
         {% endblock %}
