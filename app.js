@@ -1,6 +1,6 @@
 //import 개념
 const express = require('express');
-const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser'); // {connect.sid: 쿠키세션} / 을 객체로 만들어줌.
 const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
@@ -15,6 +15,7 @@ dotenv.config();
 //routes 연결
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const passportConfig = require('./passport');
 
 //express실행
@@ -45,8 +46,9 @@ sequelize.sync({ force: false }) //sync를 해야 연결이 됨. force:true시 �
 
 app.use(morgan('dev')) // 배포시 combined로 변경
 app.use(express.static(path.join(__dirname, 'public')));//public을 static으로 변경
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use('/img', express.static(path.join(__dirname, 'uploads')));//이미지를 가져옴.
+app.use(express.json()); // req.body를 ajax json요청으로
+app.use(express.urlencoded({ extended: false })); // req.body 폼으로부터 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // passport/index.js => serializeUser 에서 저장된 정보를 여기로 가져옴.
@@ -64,9 +66,11 @@ app.use(session({
 app.use(passport.initialize()); // 여기서 req.user, req.login, req.isAuthenticate, req.logout 이 생김.
 app.use(passport.session());
 // 세션으로 저장하는데 connect.sid라는 이름으로 세션 쿠키가 브라우저로 전송되면서 로그인이 완료됨.
+// 브라우저 connect.sid=세션쿠키 로 저장됨. 이게 서버로 가는거고 cookieParser가 확인함.
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter)
 
 //404에러처리
 app.use((req, res, next) => {

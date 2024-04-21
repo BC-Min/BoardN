@@ -13,12 +13,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for post in posts %}
+            {% for post in boarder %}
             <tr>
-                <td>{{ post.number }}</td>
+                <td>{{ post.no }}</td>
                 <td>{{ post.title }}</td>
-                <td>{{ post.author }}</td>
-                <td>{{ post.date }}</td>
+                <td>{{ post.writer }}</td>
+                <td>{{ post.writedate }}</td>
             </tr>
             {% endfor %}
         </tbody>
